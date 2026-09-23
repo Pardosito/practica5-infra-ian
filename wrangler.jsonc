@@ -2,9 +2,6 @@
 	"name": "practica-5-infra",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-17",
-	"assets": {
-		"directory": "./public",
-	},
 	"observability": {
 		"enabled": true,
 	},

@@ -11,7 +11,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 export interface Env {
-	p6: D1Database;
+	practica6: D1Database;
 }
 
 export default {
