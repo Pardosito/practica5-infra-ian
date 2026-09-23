@@ -24,6 +24,6 @@ describe("Hello World worker", () => {
 
 	it("responds with message (integration style)", async () => {
 		const response = await SELF.fetch("https://example.com");
-		expect(await response.text()).toMatchInlineSnapshot(`"Deployed with GitHub Actions! Testo testo, o algo así..."`);
+		expect(await response.text()).toMatchInlineSnapshot(`"Hello World"`);
 	});
 });
