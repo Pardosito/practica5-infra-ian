@@ -23,3 +23,85 @@ p {
 	font-size: 1.25rem;
 	opacity: 0.85;
 }
+
+main {
+	width: 100%;
+	max-width: 28rem;
+	padding: 2rem 1rem;
+}
+
+.card {
+	margin-top: 1.5rem;
+	padding: 1.25rem;
+	border-radius: 0.75rem;
+	background: rgba(255, 255, 255, 0.15);
+	text-align: left;
+}
+
+h2 {
+	margin: 0 0 1rem;
+	font-size: 1.25rem;
+}
+
+form {
+	display: grid;
+	gap: 0.5rem;
+}
+
+label {
+	font-weight: 600;
+}
+
+input {
+	padding: 0.6rem 0.75rem;
+	border: none;
+	border-radius: 0.5rem;
+	font: inherit;
+}
+
+button {
+	margin-top: 0.5rem;
+	padding: 0.6rem;
+	border: none;
+	border-radius: 0.5rem;
+	font: inherit;
+	font-weight: 600;
+	color: #4f46e5;
+	background: #fff;
+	cursor: pointer;
+}
+
+button:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
+
+#form-result {
+	margin-top: 1rem;
+}
+
+#form-result:empty {
+	display: none;
+}
+
+#form-result ul {
+	margin: 0.25rem 0 0;
+	padding-left: 1.25rem;
+}
+
+.success {
+	color: #bbf7d0;
+}
+
+.error {
+	color: #fecaca;
+}
+
+#user-list {
+	margin: 0;
+	padding-left: 1.25rem;
+}
+
+#user-list li {
+	overflow-wrap: anywhere;
+}

@@ -2,6 +2,12 @@
 	"name": "practica-5-infra",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-17",
+	// Serves public/ (the greeting page and user form). Environments inherit this.
+	// /api/* always goes to the worker so the form can call it.
+	"assets": {
+		"directory": "./public",
+		"run_worker_first": ["/api/*"],
+	},
 	"observability": {
 		"enabled": true,
 	},

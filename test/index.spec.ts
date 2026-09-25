@@ -7,7 +7,7 @@ import worker from "../src/index";
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 function postUser(body: unknown) {
-	return SELF.fetch("https://example.com", {
+	return SELF.fetch("https://example.com/api/users", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: typeof body === "string" ? body : JSON.stringify(body),
@@ -21,9 +21,9 @@ beforeEach(async () => {
 	await env.practica6.exec("DELETE FROM users");
 });
 
-describe("GET /", () => {
+describe("GET /api/users", () => {
 	it("responds with message and db data (unit style)", async () => {
-		const request = new IncomingRequest("http://example.com");
+		const request = new IncomingRequest("http://example.com/api/users");
 		// Create an empty context to pass to `worker.fetch()`.
 		const ctx = createExecutionContext();
 		const response = await worker.fetch(request, env, ctx);
@@ -34,13 +34,13 @@ describe("GET /", () => {
 
 	it("lists inserted users (integration style)", async () => {
 		await postUser({ name: "Ian", email: "ian@example.com" });
-		const response = await SELF.fetch("https://example.com");
+		const response = await SELF.fetch("https://example.com/api/users");
 		const body = await response.json<{ dbData: unknown[] }>();
 		expect(body.dbData).toEqual([{ id: expect.any(Number), name: "Ian", email: "ian@example.com" }]);
 	});
 });
 
-describe("POST /", () => {
+describe("POST /api/users", () => {
 	it("inserts a valid user, normalizing name and email", async () => {
 		const response = await postUser({ name: "  Ian Rodríguez ", email: " Ian@Example.COM " });
 		expect(response.status).toBe(201);
@@ -98,9 +98,16 @@ describe("POST /", () => {
 	});
 });
 
+describe("other routes", () => {
+	it("returns 404 for unknown API paths", async () => {
+		const response = await SELF.fetch("https://example.com/api/unknown");
+		expect(response.status).toBe(404);
+	});
+});
+
 describe("other methods", () => {
 	it("returns 405 for unsupported methods", async () => {
-		const response = await SELF.fetch("https://example.com", { method: "DELETE" });
+		const response = await SELF.fetch("https://example.com/api/users", { method: "DELETE" });
 		expect(response.status).toBe(405);
 		expect(response.headers.get("Allow")).toBe("GET, POST");
 	});

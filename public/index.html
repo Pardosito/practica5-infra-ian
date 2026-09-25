@@ -10,6 +10,26 @@
 		<main>
 			<h1 id="greeting">Hello!</h1>
 			<p id="subtitle"></p>
+
+			<section class="card">
+				<h2>Register a user</h2>
+				<!-- novalidate so invalid input reaches the worker and exercises its validator -->
+				<form id="user-form" novalidate>
+					<label for="name">Name</label>
+					<input id="name" name="name" type="text" autocomplete="name" placeholder="Ian Rodríguez" />
+
+					<label for="email">Email</label>
+					<input id="email" name="email" type="email" autocomplete="email" placeholder="ian@example.com" />
+
+					<button type="submit">Save</button>
+				</form>
+				<div id="form-result" role="status" aria-live="polite"></div>
+			</section>
+
+			<section class="card">
+				<h2>Users in the database</h2>
+				<ul id="user-list"></ul>
+			</section>
 		</main>
 		<script src="script.js"></script>
 	</body>

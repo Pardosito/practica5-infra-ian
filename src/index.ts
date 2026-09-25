@@ -18,6 +18,10 @@ export interface Env {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		const { pathname } = new URL(request.url);
+		if (pathname !== "/api/users") {
+			return Response.json({ error: "Not found" }, { status: 404 });
+		}
 		if (request.method === "POST") {
 			return this.createUser(request, env.practica6);
 		}
