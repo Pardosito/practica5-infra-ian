@@ -21,11 +21,33 @@ jobs:
         run: npm ci
         working-directory: ./
 
-      # - name: Run tests
-      #   run: npm run test
+      - name: Run tests
+        run: npm run test -- --run
 
-      - name: Deploy to Cloudflare Workers
+      - name: Deploy to Cloudflare Workers (dev)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.API_KEY }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          environment: dev
+
+      - name: Apply D1 migrations (dev)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.API_KEY }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply practica6 --env dev --remote
+
+      - name: Apply D1 migrations (prod)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.API_KEY }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: d1 migrations apply practica6 --env prod --remote
+
+      - name: Deploy to Cloudflare Workers (prod)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.API_KEY }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          environment: prod

@@ -5,11 +5,44 @@
 	"observability": {
 		"enabled": true,
 	},
+	// Top-level config is used by `wrangler dev` and the test suite.
 	"d1_databases": [
 		{
 			"binding": "practica6",
 			"database_name": "practica6",
-			"database_id": "a837433a-c57d-4dcf-8cbc-9d8fafd2917e"
+			"database_id": "a837433a-c57d-4dcf-8cbc-9d8fafd2917e",
+			"migrations_dir": "migrations"
 		}
-	]
+	],
+	// Bindings are not inherited by environments, so each one declares its own D1 database.
+	"env": {
+		"dev": {
+			// Deployed as the "practica-5-infra-dev" worker.
+			"vars": {
+				"ENVIRONMENT": "dev"
+			},
+			"d1_databases": [
+				{
+					// No database_id: wrangler creates "practica6-dev" on the first deploy.
+					"binding": "practica6",
+					"database_name": "practica6-dev",
+					"migrations_dir": "migrations"
+				}
+			]
+		},
+		"prod": {
+			// Deployed as the "practica-5-infra-prod" worker, using the existing database.
+			"vars": {
+				"ENVIRONMENT": "prod"
+			},
+			"d1_databases": [
+				{
+					"binding": "practica6",
+					"database_name": "practica6",
+					"database_id": "a837433a-c57d-4dcf-8cbc-9d8fafd2917e",
+					"migrations_dir": "migrations"
+				}
+			]
+		}
+	}
 }
