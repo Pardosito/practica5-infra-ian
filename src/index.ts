@@ -19,6 +19,13 @@ export interface Env {
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const { pathname } = new URL(request.url);
+		const userIdMatch = pathname.match(/^\/api\/users\/([^/]+)$/);
+		if (userIdMatch) {
+			if (request.method !== "DELETE") {
+				return Response.json({ error: "Method not allowed" }, { status: 405, headers: { Allow: "DELETE" } });
+			}
+			return this.deleteUser(userIdMatch[1], env.practica6);
+		}
 		if (pathname !== "/api/users") {
 			return Response.json({ error: "Not found" }, { status: 404 });
 		}
@@ -68,7 +75,19 @@ export default {
 			throw err;
 		}
 	},
+
+	async deleteUser(id: string, db: D1Database): Promise<Response> {
+		if (!/^[1-9]\d*$/.test(id)) {
+			return Response.json({ error: "User id must be a positive integer" }, { status: 400 });
+		}
+		const user = await db.prepare("DELETE FROM users WHERE id = ? RETURNING *").bind(Number(id)).first();
+		if (!user) {
+			return Response.json({ error: "User not found" }, { status: 404 });
+		}
+		return Response.json({ message: "User deleted", user });
+	},
 } satisfies ExportedHandler<Env> & {
 	queryDatabase(db: D1Database): Promise<unknown[]>;
 	createUser(request: Request, db: D1Database): Promise<Response>;
+	deleteUser(id: string, db: D1Database): Promise<Response>;
 };

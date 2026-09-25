@@ -98,6 +98,51 @@ describe("POST /api/users", () => {
 	});
 });
 
+describe("DELETE /api/users/:id", () => {
+	it("deletes an existing user and returns it", async () => {
+		const created = await postUser({ name: "Ian", email: "ian@example.com" });
+		const { user } = await created.json<{ user: { id: number } }>();
+
+		const response = await SELF.fetch(`https://example.com/api/users/${user.id}`, { method: "DELETE" });
+		expect(response.status).toBe(200);
+		expect(await response.json()).toEqual({
+			message: "User deleted",
+			user: { id: user.id, name: "Ian", email: "ian@example.com" },
+		});
+
+		const { results } = await env.practica6.prepare("SELECT * FROM users").all();
+		expect(results).toHaveLength(0);
+	});
+
+	it("only deletes the requested user", async () => {
+		const created = await postUser({ name: "Ian", email: "ian@example.com" });
+		await postUser({ name: "Ana", email: "ana@example.com" });
+		const { user } = await created.json<{ user: { id: number } }>();
+
+		await SELF.fetch(`https://example.com/api/users/${user.id}`, { method: "DELETE" });
+
+		const { results } = await env.practica6.prepare("SELECT email FROM users").all();
+		expect(results).toEqual([{ email: "ana@example.com" }]);
+	});
+
+	it("returns 404 when the user does not exist", async () => {
+		const response = await SELF.fetch("https://example.com/api/users/999999", { method: "DELETE" });
+		expect(response.status).toBe(404);
+		expect(await response.json()).toEqual({ error: "User not found" });
+	});
+
+	it.each(["abc", "0", "-1", "1.5", "1e3"])("returns 400 for invalid id %s", async (id) => {
+		const response = await SELF.fetch(`https://example.com/api/users/${id}`, { method: "DELETE" });
+		expect(response.status).toBe(400);
+	});
+
+	it("returns 405 for other methods on a user id", async () => {
+		const response = await SELF.fetch("https://example.com/api/users/1");
+		expect(response.status).toBe(405);
+		expect(response.headers.get("Allow")).toBe("DELETE");
+	});
+});
+
 describe("other routes", () => {
 	it("returns 404 for unknown API paths", async () => {
 		const response = await SELF.fetch("https://example.com/api/unknown");

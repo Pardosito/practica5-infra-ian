@@ -105,3 +105,29 @@ button:disabled {
 #user-list li {
 	overflow-wrap: anywhere;
 }
+
+#user-list li:has(.delete-user) {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 0.25rem 0;
+}
+
+.delete-user {
+	flex-shrink: 0;
+	width: 1.75rem;
+	height: 1.75rem;
+	margin: 0;
+	padding: 0;
+	border-radius: 50%;
+	font-size: 1.1rem;
+	line-height: 1;
+	color: #fff;
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.delete-user:hover,
+.delete-user:focus-visible {
+	background: #dc2626;
+}

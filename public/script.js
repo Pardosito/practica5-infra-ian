@@ -37,11 +37,38 @@ async function loadUsers() {
 		}
 		for (const user of dbData) {
 			const item = document.createElement('li');
-			item.textContent = `${user.name} (${user.email})`;
+			const label = document.createElement('span');
+			label.textContent = `${user.name} (${user.email})`;
+			const deleteButton = document.createElement('button');
+			deleteButton.type = 'button';
+			deleteButton.className = 'delete-user';
+			deleteButton.textContent = '×';
+			deleteButton.title = `Delete ${user.name}`;
+			deleteButton.setAttribute('aria-label', `Delete ${user.name}`);
+			deleteButton.addEventListener('click', () => deleteUser(user, deleteButton));
+			item.append(label, deleteButton);
 			userList.append(item);
 		}
 	} catch {
 		userList.textContent = 'Could not load users.';
+	}
+}
+
+async function deleteUser(user, button) {
+	if (!confirm(`Delete ${user.name} (${user.email})?`)) return;
+	button.disabled = true;
+	try {
+		const response = await fetch(`/api/users/${user.id}`, { method: 'DELETE' });
+		const body = await response.json();
+		if (response.ok) {
+			showResult('success', `Deleted ${user.name} (${user.email}).`);
+		} else {
+			showResult('error', body.error);
+		}
+		loadUsers();
+	} catch {
+		showResult('error', 'Request failed. Is the worker running?');
+		button.disabled = false;
 	}
 }
 
