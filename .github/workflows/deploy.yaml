@@ -20,8 +20,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test -- --run
+      - name: Run tests with coverage
+        run: npm run coverage
+
+      # Writes the coverage table to this run's summary page.
+      - name: Report coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+
+      - name: Upload HTML coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
 
   deploy-dev:
     needs: test
